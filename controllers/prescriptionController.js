@@ -1,4 +1,4 @@
-const Prescreption = require("../model/Prescreption");
+const Prescription = require("../model/Prescription");
 const Drug = require("../model/Drug");
 const Customer = require("../model/Customer");
 const createObject = require("../services/customeCreate");
@@ -6,16 +6,21 @@ const getObjects = require("../services/customeFetchAll");
 const fetchOne = require("../services/customeFetchOne");
 const customeDeleteOne = require("../services/customeDeleteOne");
 
-//get prescreptions
+//get prescriptions
 
-const getAllPrescreptions = async (req, res) => {
-  const prescreptions = await getObjects(Prescreption, false);
-  res.status(200).json(prescreptions);
+const getAllprescriptions = async (req, res) => {
+  const prescriptions = await Prescription.find().populate([
+    "customer_id",
+    "drugs_ids",
+  ]);
+  res.status(200).json({
+    prescriptions,
+  });
 };
 
-//create Prescreption
+//create prescription
 
-const createPrescreption = async (req, res) => {
+const createprescription = async (req, res) => {
   if (!req?.body?.nationalNumber || !req?.body?.drugNames) {
     res
       .status(400)
@@ -42,9 +47,9 @@ const createPrescreption = async (req, res) => {
         drugs_ids: drugs,
         price: req.body.price,
       },
-      Prescreption
+      Prescription
     );
-    customer.prescreptions_ids.push(result._id); // the prescreption id to the customer profile or DB in this case
+    customer.prescreptions_ids.push(result._id); // the prescription id to the customer profile or DB in this case
     await customer.save();
     res.status(201).json(result);
   } catch (err) {
@@ -52,14 +57,14 @@ const createPrescreption = async (req, res) => {
   }
 };
 
-// update Prescreption
+// update prescription
 
-const updatePrescreption = async (req, res) => {
+const updateprescription = async (req, res) => {
   if (!req?.body?.id) {
     return res.status(400).json({ message: "No ID was provided" });
   }
-  const prescreption = await fetchOne({ _id: req.body.id }, Prescreption);
-  if (req.body?.price) prescreption.price = req.body.price;
+  const prescription = await fetchOne({ _id: req.body.id }, Prescription);
+  if (req.body?.price) prescription.price = req.body.price;
   if (req.body?.drugNames) {
     const drugs = [];
     const keys = Object.keys(req.body.drugNames); // returns the indecis of the values in the requist
@@ -67,34 +72,43 @@ const updatePrescreption = async (req, res) => {
       const drug = await fetchOne({ name: req.body.drugNames[i] }, Drug); // get the name of the drug based on the index stored in keys
       drugs.push(drug._id);
     }
-    prescreption.drugs_ids = drugs;
+    prescription.drugs_ids = drugs;
   }
   try {
-    const result = await prescreption.save();
+    const result = await prescription.save();
     res.status(200).json(result);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
 
-// delete Prescreption
+// delete prescription
 
-const deletePrescreption = async (req, res) => {
+const deleteprescription = async (req, res) => {
   if (!req?.body?.id) {
     return res.status(400).json({ message: "No ID was provided" });
   }
-  const result = await customeDeleteOne({ _id: req.body.id }, Prescreption);
+  const result = await customeDeleteOne({ _id: req.body.id }, Prescription);
   if (result) {
-    return res.status(400).json({ message: "No Prescreption was Found" });
+    return res.status(400).json({ message: "No prescription was Found" });
   }
   res.status(200).json(result);
 };
-const getPrescreptionById = (req, res) => {};
+const getprescriptionById = async (req, res) => {
+  if (!req?.params?.id) {
+    return res.status(400).json({ message: "No ID was provided" });
+  }
+  const result = await Prescription.findOne({ _id: req.params.id }).populate([
+    "customer_id",
+    "drugs_ids",
+  ]);
+  res.status(200).json(result);
+};
 
 module.exports = {
-  getAllPrescreptions,
-  createPrescreption,
-  updatePrescreption,
-  deletePrescreption,
-  getPrescreptionById,
+  getAllprescriptions,
+  createprescription,
+  updateprescription,
+  deleteprescription,
+  getprescriptionById,
 };

@@ -54,8 +54,8 @@ const updateCustomer = async (req, res) => {
   if (req.body?.phone) customer.phone = req.body.phone;
   if (req.body?.nationalNumber)
     customer.nationalNumber = req.body.nationalNumber;
-  if (req.body?.prescreption_id)
-    customer.prescreptions_ids.push(req.body.prescreption_id);
+  if (req.body?.prescription_id)
+    customer.prescreptions_ids.push(req.body.prescription_id);
   const result = await customer.save();
   res.status(200).json(result);
 };

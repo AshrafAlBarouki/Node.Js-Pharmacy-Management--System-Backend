@@ -32,7 +32,7 @@ app.use("/logout", require("./routes/logout"));
 app.use(verifyJWT);
 app.use("/drug", require("./routes/api/drugs"));
 app.use("/customer", require("./routes/api/customers"));
-app.use("/pres", require("./routes/api/prescreptions"));
+app.use("/pres", require("./routes/api/prescriptions"));
 
 // if connected to DB listen otherwise dont
 mongoose.connection.once("open", () => {

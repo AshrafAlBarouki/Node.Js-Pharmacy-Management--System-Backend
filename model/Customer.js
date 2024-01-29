@@ -1,4 +1,3 @@
-const { required } = require("joi");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -19,7 +18,9 @@ const customerSchema = new Schema(
       required: true,
       unique: true,
     },
-    prescreptions_ids: [{ type: mongoose.Schema.ObjectId, ref: "Prescreption"}],
+    prescreptions_ids: [
+      { type: mongoose.Schema.ObjectId, ref: "Prescription" },
+    ],
   },
   {
     toJSON: {
