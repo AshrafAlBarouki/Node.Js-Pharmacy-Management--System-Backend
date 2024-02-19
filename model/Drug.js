@@ -14,8 +14,10 @@ const drugSchema = new Schema({
     type: String,
   },
   unitPrice: Number,
-  numberOfUnit:Number,
+  quantity:Number,
   totalPrice: Number,
+  expDate:Date,
+  manufacturer:String
 },
 {
   toJSON: {

@@ -82,7 +82,7 @@ const getCustomerById = async (req, res) => {
   if (!req?.params?.id) {
     return res.status(400).json({ message: "No Customer ID was provided" });
   }
-  const customer = await Customer.findOne({ _id: req.params.id }).exec();
+  const customer = await Customer.findOne({ _id: req.params.id }).populate("prescreptions_ids").exec();
   if (!customer) {
     return res
       .status(204)

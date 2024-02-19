@@ -2,7 +2,6 @@ const Prescription = require("../model/Prescription");
 const Drug = require("../model/Drug");
 const Customer = require("../model/Customer");
 const createObject = require("../services/customeCreate");
-const getObjects = require("../services/customeFetchAll");
 const fetchOne = require("../services/customeFetchOne");
 const customeDeleteOne = require("../services/customeDeleteOne");
 
@@ -41,6 +40,9 @@ const createprescription = async (req, res) => {
     drugs.push(drug._id);
   }
   try {
+    // decrese the quantity of drugs
+        // TO DO
+
     const result = await createObject(
       {
         customer_id: customer._id,
